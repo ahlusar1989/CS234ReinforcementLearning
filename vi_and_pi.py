@@ -62,16 +62,15 @@ def policy_evaluation(P, nS, nA, policy, gamma=0.9, tol=1e-3):
 			for action in actions:
 				for possible_next_state in P[state][action]:
 					# tuple of (probability, nextstate, reward, terminal)					
-                    prob_action = possible_next_state[0]
-                    current_reward = possible_next_state[2]
-                    future_reward = gamma * value_func_old[possible_next_state[1]]
-                    v += prob_action * (current_reward + future_reward)
-             difference = abs(value_func_old[s] - v)
-             delta = max(delta, difference)
-             value_function_new[state] = v
-        if delta <= tol:
-        	break
-        value_func_old = value_func_new
+					prob_action = possible_next_state[0]
+					current_reward = possible_next_state[2]
+					future_reward = gamma * value_func_old[possible_next_state[1]]
+					v += prob_action * (current_reward + future_reward)
+				difference = abs(value_func_old[s] - v)
+				delta = max(delta, difference)
+				value_function_new[state] = v
+		if delta <= tol: break
+		value_func_old = value_func_new
 	return value_function_new
 
 
@@ -129,10 +128,18 @@ def policy_iteration(P, nS, nA, gamma=0.9, tol=10e-3):
 	policy: np.ndarray[nS]
 	"""
 
-	value_function = np.zeros(nS)
+	previous_value_function = np.zeros(nS)
 	policy = np.zeros(nS, dtype=int)
 
+	while True:
+		new_value_function = policy_evaluation(P, nS, nA, policy, gamma, tol)
+		new_policy = policy_improvement(P, nS, nA, value_function, policy, gamma)
 
+		if np.all(np.abs(previous_value_function - new_value_function) < tol) :   
+			break
+
+		previous_value_function = new_value_function.copy()
+		policy = new_policy.copy()
 
 	return value_function, policy
 
@@ -157,7 +164,7 @@ def value_iteration(P, nS, nA, gamma=0.9, tol=1e-3):
 	value_function = np.zeros(nS)
 	policy = np.zeros(nS, dtype=int)
 
-	
+
 
 	return value_function, policy
 
