@@ -162,10 +162,41 @@ def value_iteration(P, nS, nA, gamma=0.9, tol=1e-3):
 	policy: np.ndarray[nS]
 	"""
 
+	def future_step_look_ahead(state, value):
+		"""
+		Helper function to calculate the value for all action in a given state.
+
+		Args:
+			state: The state to consider (dtype = int)
+			value: The value to use as an estimator, Vector of length nS
+
+		Returns:
+			A vector of length env.nA containing the expected value of each action.
+		"""
+		A = np.zeros(nA, dtype = 'int')
+		for i in range(nA):
+			for probability, nextstate, reward, terminal in P[state][i]:
+				A[i] += probability * (reward + gamma * value[nextstate])
+		return A
+
 	value_function = np.zeros(nS)
+
+	while True:
+		delta = 0
+
+		for state in range(nS):
+			A = future_step_look_ahead(state, value_function)
+			best_action = np.max(A)
+			delta = max(delta, np.abs(best_action - value_function[state]))
+			value_function[state] = best_action
+		if delta < tol:
+			break
 	policy = np.zeros(nS, dtype=int)
 
-
+	for state in range(nS):
+		A = future_step_look_ahead(state, value_function)
+		best_action = np.argmax(A)
+		policy[state] = 1.0
 
 	return value_function, policy
 
@@ -211,12 +242,12 @@ if __name__ == "__main__":
 
 	print("\n" + "-"*25 + "\nBeginning Policy Iteration\n" + "-"*25)
 
-	V_pi, p_pi = policy_iteration(env.P, env.nS, env.nA, gamma=0.9, tol=1e-3)
-	render_single(env, p_pi, 100)
+	# V_pi, p_pi = policy_iteration(env.P, env.nS, env.nA, gamma=0.9, tol=1e-3)
+	# render_single(env, p_pi, 100)
 
-	# print("\n" + "-"*25 + "\nBeginning Value Iteration\n" + "-"*25)
+	print("\n" + "-"*25 + "\nBeginning Value Iteration\n" + "-"*25)
 
-	# V_vi, p_vi = value_iteration(env.P, env.nS, env.nA, gamma=0.9, tol=1e-3)
-	# render_single(env, p_vi, 100)
+	V_vi, p_vi = value_iteration(env.P, env.nS, env.nA, gamma=0.9, tol=1e-3)
+	render_single(env, p_vi, 100)
 
 
