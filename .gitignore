@@ -1,0 +1,4 @@
+*.pyc
+rl/
+*.sh
+Makefile
