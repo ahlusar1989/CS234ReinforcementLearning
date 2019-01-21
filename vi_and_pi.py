@@ -51,17 +51,28 @@ def policy_evaluation(P, nS, nA, policy, gamma=0.9, tol=1e-3):
 		the value of state s
 	"""
 
-	value_function = np.zeros(nS)
+	value_function_old = np.zeros.rand(nS)
+	value_function_new = np.zeros(env.nS)
 
 	while True:
 		delta = 0
 		for state in range(nS):
 			v = 0
 			actions = P[state]
-			for action, action_probability in enumerate(actions)
-			
-
-	return value_function
+			for action in actions:
+				for possible_next_state in P[state][action]:
+					# tuple of (probability, nextstate, reward, terminal)					
+                    prob_action = possible_next_state[0]
+                    current_reward = possible_next_state[2]
+                    future_reward = gamma * value_func_old[possible_next_state[1]]
+                    v += prob_action * (current_reward + future_reward)
+             difference = abs(value_func_old[s] - v)
+             delta = max(delta, difference)
+             value_function_new[state] = v
+        if delta <= tol:
+        	break
+        value_func_old = value_func_new
+	return value_function_new
 
 
 def policy_improvement(P, nS, nA, value_from_policy, policy, gamma=0.9):
@@ -85,12 +96,18 @@ def policy_improvement(P, nS, nA, value_from_policy, policy, gamma=0.9):
 	"""
 
 	new_policy = np.zeros(nS, dtype='int')
-
-	############################
-	# YOUR IMPLEMENTATION HERE #
-
-
-	############################
+	for state in range(nS):
+		B = np.zeros(nA, dtype = 'int')
+		q = -1
+		for action in range(nA):
+			for probability, nextstate, reward, terminal in P[state][action]:
+				B[action] += probability * (reward + gamma * value_from_policy[nextstate])
+			if(B[action] > q):
+				q = B[action]
+				new_policy[state] = action
+			elif B[action] == q:
+				if random.random() < 0.5:
+					new_policy[state] = action
 	return new_policy
 
 
@@ -115,11 +132,8 @@ def policy_iteration(P, nS, nA, gamma=0.9, tol=10e-3):
 	value_function = np.zeros(nS)
 	policy = np.zeros(nS, dtype=int)
 
-	############################
-	# YOUR IMPLEMENTATION HERE #
 
 
-	############################
 	return value_function, policy
 
 def value_iteration(P, nS, nA, gamma=0.9, tol=1e-3):
@@ -142,11 +156,9 @@ def value_iteration(P, nS, nA, gamma=0.9, tol=1e-3):
 
 	value_function = np.zeros(nS)
 	policy = np.zeros(nS, dtype=int)
-	############################
-	# YOUR IMPLEMENTATION HERE #
 
+	
 
-	############################
 	return value_function, policy
 
 def render_single(env, policy, max_steps=100):
