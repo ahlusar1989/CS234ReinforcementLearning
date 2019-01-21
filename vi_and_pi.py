@@ -1,9 +1,11 @@
 ### MDP Value Iteration and Policy Iteration
 
 import numpy as np
+np.seterr(all='warn')
 import gym
 import time
 from lake_envs import *
+import random
 
 np.set_printoptions(precision=3)
 
@@ -51,8 +53,8 @@ def policy_evaluation(P, nS, nA, policy, gamma=0.9, tol=1e-3):
 		the value of state s
 	"""
 
-	value_function_old = np.random.rand(nS)
-	value_function_new = np.zeros(nS)
+	value_function_old = np.zeros(nS, dtype = 'int')
+	value_function_new = np.zeros(nS, dtype = 'int')
 
 	while True:
 		delta = 0
@@ -65,7 +67,7 @@ def policy_evaluation(P, nS, nA, policy, gamma=0.9, tol=1e-3):
 					current_reward = possible_next_state[2]
 					future_reward = gamma * value_function_old[possible_next_state[1]]
 					v += prob_action * (current_reward + future_reward)
-				difference = abs(value_function_old[state] - v)
+				difference = value_function_old[state] - v
 				delta = max(delta, difference)
 				value_function_new[state] = v
 		if delta <= tol: break
