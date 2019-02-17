@@ -2,3 +2,4 @@
 rl/
 *.sh
 Makefile
+notebooks/.ipynb_checkpoints/
