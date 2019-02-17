@@ -44,11 +44,11 @@ class FiniteModel(object, metaclass = ABCMeta):
         We take the argmax_a of Q(s,a).
         q[s] = [q(s,0), q(s,1), ...]
         """
-        if self._action_space_rep = 'list':
+        if self._action_space_rep == 'list':
             if np.argmax(self.Q[state]) == action:
                 return 1
             return 0
-        elif self._action_space_rep = 'dict':
+        elif self._action_space_rep == 'dict':
             if max(self.Q[state], key=self.Q[state].get) == action:
                 return 1
             return 0
@@ -61,7 +61,7 @@ class FiniteModel(object, metaclass = ABCMeta):
         """
         return (self.epsilon / self.action_space) +  \
             (1 - self.epsilon) * self.pi(action, space)
-            
+
     def choose_action(self, policy, state):
         """Uses specified policy to select an action randomly given the state.
         Arguments
@@ -70,8 +70,8 @@ class FiniteModel(object, metaclass = ABCMeta):
         policy: function, can be self.pi, or self.b, or another custom policy.
         state: observation of the environment.
         """
-        probs = [policy(a, state) for a in self.action_space]
-        return np.random.choice(self.action_space, p=probs)
+        probability = [policy(a, state) for a in self.action_space]
+        return np.random.choice(self.action_space, p    = probability)
 
    
     @abstractmethod

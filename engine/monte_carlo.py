@@ -35,7 +35,7 @@ def MonteCaroloFiniteModel(FiniteModel):
         super(FiniteMCModel, self).__init__(state_space, action_space, gamma, epsilon)
 
     def generate_returns(self, episode) :
-		"""Backup on returns per time period in an epoch
+        """Backup on returns per time period in an epoch
         Arguments
         ---------
         
@@ -44,11 +44,11 @@ def MonteCaroloFiniteModel(FiniteModel):
         G = {} # return on state
         C = 0 # cumulative reward
         for tuple_of_ep in reversed(episode):
-        	observation, action, reward = tuple_of_ep
-        	G[(observation, action, reward)] = C = reward + self.gamma * C
+            observation, action, reward = tuple_of_ep
+            G[(observation, action, reward)] = C = reward + self.gamma * C
         return G
-	
-	def update_Q(self, episode):
+    
+    def update_Q(self, episode):
         """Performs a action-value update.
         Arguments
         ---------
@@ -57,10 +57,28 @@ def MonteCaroloFiniteModel(FiniteModel):
         """
         G = generate_returns(episode)
         for s in G:
-        	state, action = s
-        	q = self.Q[state][action]
-        	self.Ql[state][action] += 1
-        	N = self.Ql[state][action]
-        	self.Q[state][action] = q * (N / N + 1) + G[s] / (N + 1)
+            state, action = s
+            q = self.Q[state][action]
+            self.Ql[state][action] += 1
+            N = self.Ql[state][action]
+            self.Q[state][action] = q * (N / N + 1) + G[s] / (N + 1)
 
+    def score(env, policy, n_samples = 10000):
+        rewards = []
+        for _ in range(n_samples):
+            observation = env.reset()
+            cum_rewards = 0
+            while True:
+                action = self.choose_action(policy, observation)
+                observation, reward, done, _ = env.step(action)
+                cum_rewards += reward
+                if done:
+                    rewards.apped(cum_rewards)
+                    break
+        return np.mean(rewards)
+   
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()       
 
