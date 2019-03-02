@@ -36,8 +36,8 @@ pip install moviepy
 ```
 - Clone this repo
 ```
-git clone https://github.com/Swirler/Deep-Reinforcement-Learning-applied-to-DOOM
-cd Deep-Reinforcement-Learning-applied-to-DOOM
+git clone https://github.com/ahlusar1989/CS234ReinforcementLearning
+cd DoomDQN
 ```
 
 ## Deep Q Learning
